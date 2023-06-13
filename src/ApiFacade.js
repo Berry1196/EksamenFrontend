@@ -1,4 +1,5 @@
-const WEB_URL = "http://localhost:8080/api/";
+// const WEB_URL = "http://localhost:8080/api/";
+const WEB_URL = "https://www.berrywebsite.dk/Eksamen/api/";
 
 function apiFacade() {
   const setToken = (token) => {
@@ -33,168 +34,6 @@ function apiFacade() {
     const res = await data.json();
     return res;
   }
-
-  // Creates an exercise
-  async function createExercise(exercise) {
-    const options = makeOptions("POST", true, exercise);
-    const data = await fetch(WEB_URL + "exercises", options);
-    const res = await data.json();
-    return res;
-  }
-
-  // Deletes an exercise
-  async function deleteExercise(id) {
-    const options = makeOptions("DELETE", true);
-    const data = await fetch(WEB_URL + "exercises/" + id, options);
-    const res = await data.json();
-    return res;
-  }
-
-  // Deletes a workout
-  async function deleteWorkout(id) {
-    const options = makeOptions("DELETE", true);
-    const data = await fetch(WEB_URL + "workouts/" + id, options);
-    const res = await data.json();
-    return res;
-  }
-
-  // Retrieves all exercises
-  async function getExercises() {
-    const options = makeOptions("GET", true);
-    const data = await fetch(WEB_URL + "exercises", options);
-    const res = await data.json();
-    return res;
-  }
-
-  //Get owners
-  async function getOwners() {
-    const options = makeOptions("GET", true);
-    const data = await fetch(WEB_URL + "owner", options);
-    const res = await data.json();
-    return res;
-  }
-
-  //Create owner
-  async function createOwner(owner) {
-    const options = makeOptions("POST", true, owner);
-    const data = await fetch(WEB_URL + "owner", options);
-    const res = await data.json();
-    return res;
-  }
-
- 
-            
-
-  //Delete boat
-  async function deleteBoat(id) {
-    const options = makeOptions("DELETE", true);
-    const data = await fetch(WEB_URL + "boat/" + id, options);
-    const res = await data.json();
-    return res;
-  }
-
-  //Fetch Boats
-  async function fetchAllBoats() {
-    const options = makeOptions("GET", true);
-    const data = await fetch(WEB_URL + "boat", options);
-    return data.json();
-  }
-
-  //Create boat
-  async function createBoat(boat) {
-    const options = makeOptions("POST", true, boat);
-    const data = await fetch(WEB_URL + "boat", options);
-    const res = await data.json();
-    return res;
-  }
-
-  // async function editBoat(boat) {
-  //   const options = makeOptions("PUT", true, boat);
-  //   const data = await fetch(WEB_URL + "boat/edit", options);
-  //   const res = await data.json();
-  //   return res;
-  // }
-  
-
-  //Fetch harbour
-  async function fetchHarbour() {
-    const options = makeOptions("GET", true);
-    const data = await fetch(WEB_URL + "harbour", options);
-    return data.json();
-  }
-
-  // Add boat to harbour
-  async function addBoatToHarbour(boat_id, harbour_id) {
-    const options = makeOptions("PUT", true, {id: boat_id, harbour_id });
-    const data = await fetch(
-      WEB_URL + "boat", options);
-    const res = await data.json();
-    return res;
-  }
-
-  //Edit boat
-   function editBoat(boat_id, boat) {
-    return fetch(WEB_URL + 'boat/edit', {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            id: boat_id,
-            brand: boat.brand,
-            make: boat.make,
-            image: boat.image,
-        })
-    })
-    .then(response => {
-      if (response.status === 200) {
-        alert("Boat edited");
-      } else {
-        alert("Something went wrong");
-      }
-    })
-    .catch(error => {
-        console.error(error);
-    });
-}
-
-        
-
- 
-
- async function editOwner(owner_id, owner) {
-  return fetch(WEB_URL + 'owner/edit', {
-      method: 'PUT',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-          id: owner_id,
-          name: owner.name,
-          address: owner.address,
-          phone: owner.phone,
-      })
-  })
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('Network response was not ok');
-          }
-          const contentType = response.headers.get('content-type');
-          if (contentType && contentType.includes('application/json')) {
-              return response.json();
-          } else {
-              throw new TypeError('Response was not JSON');
-          }
-      })
-      .then(data => {
-          alert("Owner edited");
-          return data;
-      })
-      .catch(error => {
-          console.error(error);
-      });
-}
-
 
 
 //Event functions
@@ -285,8 +124,6 @@ async function assignUserToAssignment(assignmentId, username) {
 }
 
 
-
-
 //Get Assignments
 async function getAssignments() {
   const options = makeOptions("GET", true);
@@ -310,14 +147,6 @@ async function addAssignmentToEvent(event_id, assignment_id) {
 }
 
 
-
-
-
-
-
-
-
-
 //Get all users 
 async function getAllUsers() {
   const options = makeOptions("GET", true);
@@ -325,38 +154,6 @@ async function getAllUsers() {
   const res = await data.json();
   return res;
 }
-
-
-
-
-
-
-
-    
-
-
-  // add workout to user
-  async function linkWorkoutToUser(username, workout) {
-    const options = makeOptions("POST", true, workout);
-    const data = await fetch(WEB_URL + "workouts/" + username, options);
-    const res = await data.json();
-    return res;
-  }
-
-  //add exercise to workout by id
-  async function linkExerciseToWorkout(id, exercise) {
-    const options = makeOptions("POST", true, exercise);
-    const data = await fetch(WEB_URL + "workouts/exercises/" + id, options);
-    const res = await data.json();
-    return res;
-  }
-
-  async function createWorkout(workout) {
-    const options = makeOptions("POST", true, workout);
-    const data = await fetch(WEB_URL + "workouts", options);
-    const res = await data.json();
-    return res;
-  }
 
   // fetch data and catch possible errors
   async function fetchAdminData() {
@@ -373,19 +170,6 @@ async function getAllUsers() {
   async function fetchData(url) {
     const options = makeOptions("GET", true);
     const data = await fetch(url, options);
-    return data.json();
-  }
-
-
-  async function deleteWorkoutFromUser(username, id) {
-    const options = makeOptions("DELETE", true);
-    const data = await fetch(WEB_URL + "workouts/user/" + username + "/" + id, options);
-    return data.json();
-  }
-
-  async function fetchExerciseByName(name) {
-    const options = makeOptions("GET", true);
-    const data = await fetch(WEB_URL + "exercises/" + name, options);
     return data.json();
   }
 
@@ -438,24 +222,6 @@ async function getAllUsers() {
     readJwtToken,
     fetchData,
     createUser,
-    linkWorkoutToUser,
-    createExercise,
-    deleteExercise,
-    getExercises,
-    createWorkout,
-    linkExerciseToWorkout,
-    fetchExerciseByName,
-    deleteWorkout,
-    deleteWorkoutFromUser,
-    getOwners,
-    createOwner,
-    deleteBoat,
-    fetchAllBoats,
-    fetchHarbour,
-    createBoat,
-    addBoatToHarbour,
-    editBoat,
-    editOwner,
     getEvents,
     deleteEvent,
     createEvent,

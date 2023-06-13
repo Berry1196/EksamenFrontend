@@ -123,10 +123,16 @@ export default function AdminHome() {
                       Name
                     </th>
                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      location
+                      Location
                     </th>
                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      phone
+                      Dish
+                    </th>
+                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                      Price pr person
+                    </th>
+                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                      Time
                     </th>
 
                     <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
