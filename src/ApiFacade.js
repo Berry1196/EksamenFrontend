@@ -296,6 +296,29 @@ async function getTrips() {
   return res;
 }
 
+async function getEvents() {
+  const options = makeOptions("GET", true);
+  const data = await fetch(WEB_URL + "dinnerevent", options);
+  const res = await data.json();
+  return res;
+}
+
+//Delete events
+async function deleteEvent(event_id) {
+  const options = makeOptions("DELETE", true);
+  const data = await fetch(WEB_URL + "dinnerevent/" + event_id, options);
+  const res = await data.json();
+  return res;
+}
+
+//Create event
+async function createEvent(event) {
+  const options = makeOptions("POST", true, event);
+  const data = await fetch(WEB_URL + "dinnerevent", options);
+  const res = await data.json();
+  return res;
+}
+
 
 
 
@@ -427,6 +450,9 @@ async function getTrips() {
     editOwner,
     deleteHarbour,
     getTrips,
+    getEvents,
+    deleteEvent,
+    createEvent,
   };
 }
 const facade = apiFacade();

@@ -18,8 +18,9 @@ import AdminExercises from "./routes/admin/AdminExercises";
 import Activity from "./routes/user/UserActivity";
 import PageNotFound from "./routes/guest/PageNotFound";
 import Boats from "./routes/admin/Boats";
-import BoatSearch from "./routes/user/BoatSearch";
+
 import AdminHarbour from "./routes/admin/AdminHarbour";
+import UserEvents from "./routes/user/UserEvents";
 
 function App() {
   const [username, setUsername] = useState("");
@@ -48,10 +49,10 @@ function App() {
   const userRoutes = (
     <Fragment>
       <Route path="/" element={<UserDashboard username={username} />} />
-      <Route path="/boats" element={<Boats username={username} />} />
-      <Route path="/specificBoat" element={<BoatSearch username={username} />} />
+
       <Route path="/workouts" element={<UserWorkouts username={username} />} />
       <Route path="/activity" element={<Activity username={username} />} />
+      <Route path="/events" element={<UserEvents username={username} />} />
     </Fragment>
   );
 

@@ -4,8 +4,8 @@ import facade from "../../ApiFacade";
 import { Dialog, Transition } from "@headlessui/react";
 import { LinkIcon, PlusIcon, QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-export default function UserBoats({ username }) {
-  const [boats, setBoats] = useState([]);
+export default function UserEvents({ username }) {
+  const [events, setEvents] = useState([]);
   const [input, setInput] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -23,19 +23,19 @@ export default function UserBoats({ username }) {
     setInput(e.target.value);
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    facade.fetchAllBoats(input).then((data) => {
-      // if workouts consists of workouts with the same name, filter them out
-      const filteredBoats = data.filter((boat, index, self) => self.findIndex((w) => w.brand === boat.brand) === index);
-      setBoats(filteredBoats);
-    });
-  }
+  // function handleSubmit(e) {
+  //   e.preventDefault();
+  //   facade.getEvents(input).then((data) => {
+  //     // if events consists of workouts with the same name, filter them out
+  //     const filteredEvents = data.filter((event, index, self) => self.findIndex((w) => w.event_name === event.event_name) === index);
+  //     setEvents(filteredEvents);
+  //   });
+  // }
 
   useEffect(() => {
-    facade.fetchAllBoats().then((data) => {
+    facade.getEvents().then((data) => {
       console.log(data);
-      setBoats(data);
+      setEvents(data);
     });
   }, []);
 
@@ -53,10 +53,10 @@ export default function UserBoats({ username }) {
       )}
 
       <div className="grid grid-cols-4 gap-4 mt-10">
-        {boats
-          .filter((boat) => (input.toLowerCase() === "" ? boat : boat.brand.toLowerCase().includes(input)))
-          .map((boat) => (
-            <div key={boat.id} className="bg-white shadow overflow-hidden sm:rounded-lg">
+        {events
+          .filter((event) => (input.toLowerCase() === "" ? event : event.event_name.toLowerCase().includes(input)))
+          .map((event) => (
+            <div key={event.id} className="bg-white shadow overflow-hidden sm:rounded-lg">
               <div className="px-4 py-5 sm:px-6">
                 <h3 className="text-lg leading-6 font-medium text-gray-900">{boat.brand}</h3>
               </div>
@@ -100,25 +100,25 @@ export default function UserBoats({ username }) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {boats
-                  .filter((boat) => (input.toLowerCase() === "" ? boat : boat.brand.toLowerCase().includes(input)))
-                  .map((boat) => (
-                    <tr key={boat.id}>
-                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">{boat.brand}</td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{boat.make}</td>
+                {events
+                  .filter((events) => (input.toLowerCase() === "" ? events : events.brand.toLowerCase().includes(input)))
+                  .map((events) => (
+                    <tr key={events.id}>
+                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">{events.brand}</td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{events.make}</td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        <img src={boat.image} alt="" />
+                        <img src={events.image} alt="" />
                       </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{boat.harbour}</td>
-                      {boat.owner &&
-                        boat.owner.map((data) => (
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{events.harbour}</td>
+                      {events.assignment &&
+                        boat.assignement.map((data) => (
                           <td key={data.id} className="whitespace-nowrap px-1 py-1 text-sm text-gray-500 flex">
-                            {data.name}
+                            {data.familyName}
                           </td>
                         ))}
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                         <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                          Edit<span className="sr-only">, {boat.name}</span>
+                          Edit<span className="sr-only">, {events.event_name}</span>
                         </a>
                       </td>
                     </tr>

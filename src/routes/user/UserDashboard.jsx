@@ -2,10 +2,12 @@ import { Fragment, useState, useEffect } from "react";
 import facade from "../../ApiFacade";
 
 export default function Dashboard({ username }) {
-  const [trip, settrip] = useState([]);
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    facade.getTrips().then((data) => settrip(data));
+    facade.getEvents().then((data) => {
+      setEvents(data);
+    });
   }, []);
 
   return (
@@ -14,7 +16,7 @@ export default function Dashboard({ username }) {
         <div className="sm:flex sm:items-center">
           <div className="sm:flex-auto">
             <h1 className="text-base font-semibold leading-6 text-gray-900">Users</h1>
-            <p className="mt-2 text-sm text-gray-700">A list of all trips, inc their boat, and the habour the boat is in.</p>
+            <p className="mt-2 text-sm text-gray-700">A list of all events, inc their boat, and the habour the boat is in.</p>
           </div>
           <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
             <button
@@ -46,14 +48,16 @@ export default function Dashboard({ username }) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {trip.map((trips) => (
-                    <tr key={trips.id}>
-                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">{trips.name}</td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{trips.address}</td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{trips.phone}</td>
+                  {events.map((event) => (
+                    <tr key={event.id}>
+                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">{event.eventName}</td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{event.location}</td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{event.dish}</td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{event.pricePerPerson}</td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{event.time}</td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                         <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                          Edit<span className="sr-only">, {trips.name}</span>
+                          Edit<span className="sr-only">, {event.name}</span>
                         </a>
                       </td>
                     </tr>
