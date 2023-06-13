@@ -11,15 +11,42 @@ export default function AdminHome() {
     dish: "",
     pricePerPerson: null,
   });
+  const [assignment, setAssignment] = useState({
+    familyName: "",
+    createDate: "",
+    contactInfo: "",
+  });
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [assignments, setAssignments] = useState([]);
   const [events, setEvents] = useState([]);
   const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
-  //Use effect to get all trips
+  //Use effect to get all events
   useEffect(() => {
     facade.getEvents().then((data) => setEvents(data));
   }, []);
+
+  //use effect to get all assignments
+  useEffect(() => {
+    facade.getAssignments().then((data) => setAssignments(data));
+  }, []);
+
+  //Handle assignment change
+  function handleAssignmentChange(e) {
+    setAssignment({
+      ...assignment,
+      [e.target.name]: e.target.value,
+    });
+  }
+
+  //Handle assignment submit
+  function handleAssignmentSubmit(e) {
+    e.preventDefault();
+    facade.createAssignment(assignment);
+  }
 
   function handleChange(e) {
     if (e.target.name === "pricePerPerson") {
@@ -41,7 +68,7 @@ export default function AdminHome() {
     setOpen(false);
   }
 
-  //Edits a owner
+  //Edits an event
   function handleEditSubmit(e) {
     e.preventDefault();
     facade.updateEvent(selectedEvent.id, event);
@@ -51,12 +78,21 @@ export default function AdminHome() {
   function handleEditClick(e) {
     setEditOpen(true);
     setSelectedEvent(e);
-    console.log(e);
   }
 
-  //handle delete
+  //deletes an event
   function handleDelete(id) {
     facade.deleteEvent(id);
+  }
+
+  function handleSearchChange(e) {
+    setSearchTerm(e.target.value);
+  }
+
+  // Handle search submit
+  function handleSearchSubmit(e) {
+    e.preventDefault();
+    // Search for users and add them to the assignment here
   }
 
   return (
@@ -106,6 +142,19 @@ export default function AdminHome() {
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{event.dish}</td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{event.pricePerPerson}</td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{event.time}</td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        <div className="flex flex-col">
+                          {event.assignment && event.assignment.map((data) => <span key={data.id}></span>)}
+                          <div>
+                            <button
+                              className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                              onClick={() => setIsAssignModalOpen(true)}
+                            >
+                              Assign
+                            </button>
+                          </div>
+                        </div>
+                      </td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                         <button onClick={() => handleEditClick(event)}>Edit</button>
                       </td>
@@ -127,6 +176,44 @@ export default function AdminHome() {
           </div>
         </div>
       </div>
+      {/* Add this Modal after your table */}
+      {isAssignModalOpen && (
+        <div className="fixed z-10 inset-0 overflow-y-auto">
+          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 bg-gray-800 bg-opacity-75 transition-opacity"></div>
+
+            <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+              <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Assign User</h3>
+
+              {/* Search bar */}
+              <form onSubmit={handleSearchSubmit} className="mb-4">
+                <input type="text" value={searchTerm} onChange={handleSearchChange} className="w-full py-2 px-4 text-gray-700 bg-gray-200 rounded" placeholder="Search for user" />
+                <button type="submit" className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                  Search
+                </button>
+              </form>
+
+              {/* Assignment info form */}
+              <form onSubmit={handleAssignmentSubmit}>
+                {/* Replace this with your actual form inputs */}
+                <input type="text" name="familyName" value={assignment.familyName} onChange={handleAssignmentChange} className="w-full py-2 px-4 mb-3 text-gray-700 bg-gray-200 rounded" placeholder="Family Name" />
+                <input type="text" name="createDate" value={assignment.createDate} onChange={handleAssignmentChange} className="w-full py-2 px-4 mb-3 text-gray-700 bg-gray-200 rounded" placeholder="Create Date" />
+                <input type="text" name="contactInfo" value={assignment.contactInfo} onChange={handleAssignmentChange} className="w-full py-2 px-4 mb-3 text-gray-700 bg-gray-200 rounded" placeholder="Contact Info" />
+                <button type="submit" className="w-full py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600">
+                  Assign
+                </button>
+              </form>
+
+              {/* Close button */}
+              <button className="absolute top-0 right-0 p-4 text-gray-500 hover:text-gray-800" onClick={() => setIsAssignModalOpen(false)}>
+                <XMarkIcon />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Create Event Modal */}
       <Transition.Root show={open} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={setOpen}>
           <div className="fixed inset-0" />

@@ -160,91 +160,7 @@ function apiFacade() {
 
         
 
-  //  //Edit owner
-  //  function editOwner(owner_id, owner) {
-  //   const data = null;
-  //   fetch( WEB_URL +'owner/edit', {
-  //           method: 'PUT',
-  //           headers: {
-  //               'Content-Type': 'application/json'
-  //           },
-  //           body: JSON.stringify({
-  //               id: owner_id,
-  //               name: owner.name,
-  //               address: owner.address,
-  //               phone: owner.phone,
-                
-  //           })
-  //       })
-  //           .then(response => response.json())
-  //           .then(data1 => {
-  //             data = data1;
-              
-  //           })
-  //           .catch(error => {
-  //               console.error(error);
-  //           });
-  //       alert("Owner edited");
-  //   return data.json();
-  // }
-
-//   async function editOwner(owner_id, owner) {
-//     return fetch(WEB_URL + 'owner/edit', {
-//         method: 'PUT',
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({
-//             id: owner_id,
-//             name: owner.name,
-//             address: owner.address,
-//             phone: owner.phone,
-//         })
-//     })
-//     .then(response => {
-//         if (!response.ok) {
-//             throw new Error('Network response was not ok');
-//         }
-//         return response.json();
-//     })
-//     .then(data => {
-//         alert("Owner edited");
-//         return data; // Return the parsed JSON data
-//     })
-//     .catch(error => {
-//         console.error(error);
-//     });
-// }
-
-// function editOwner(owner_id, owner) {
-//   const data = {};
-//   fetch(WEB_URL + 'owner/edit', {
-//       method: 'PUT',
-//       headers: {
-//           'Content-Type': 'application/json'
-//       },
-//       body: JSON.stringify({
-//           id: owner_id,
-//           name: owner.name,
-//           address: owner.address,
-//           phone: owner.phone,
-//       })
-//   })
-//       .then(response => {
-//           if (!response.ok) {
-//               throw new Error('Network response was not ok');
-//           }
-//           return response.json();
-//       })
-//       .then(data1 => {
-//           data = data1;
-//       })
-//       .catch(error => {
-//           console.error(error);
-//       });
-//   alert("Owner edited");
-//   return data;
-// }
+ 
 
  async function editOwner(owner_id, owner) {
   return fetch(WEB_URL + 'owner/edit', {
@@ -279,22 +195,9 @@ function apiFacade() {
       });
 }
 
-//Harbour functions
-
-async function deleteHarbour(harbour_id) {
-  const options = makeOptions("DELETE", true);
-  const data = await fetch(WEB_URL + "harbour/" + harbour_id, options);
-  const res = await data.json();
-  return res;
-}
 
 
-async function getTrips() {
-  const options = makeOptions("GET", true);
-  const data = await fetch(WEB_URL + "trip", options);
-  const res = await data.json();
-  return res;
-}
+//Event functions
 
 async function getEvents() {
   const options = makeOptions("GET", true);
@@ -345,6 +248,24 @@ async function updateEvent(event_id, event) {
   .catch(error => {
       console.error(error);
   });
+}
+
+//Assignment functions
+
+//Create Assignment
+async function createAssignment(assignment) {
+  const options = makeOptions("POST", true, assignment);
+  const data = await fetch(WEB_URL + "assignment", options);
+  const res = await data.json();
+  return res;
+}
+
+//Get Assignments
+async function getAssignments() {
+  const options = makeOptions("GET", true);
+  const data = await fetch(WEB_URL + "assignment/all", options);
+  const res = await data.json();
+  return res;
 }
 
 
@@ -477,12 +398,12 @@ async function updateEvent(event_id, event) {
     addBoatToHarbour,
     editBoat,
     editOwner,
-    deleteHarbour,
-    getTrips,
     getEvents,
     deleteEvent,
     createEvent,
     updateEvent,
+    createAssignment,
+    getAssignments,
   };
 }
 const facade = apiFacade();
