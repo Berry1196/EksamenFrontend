@@ -319,6 +319,35 @@ async function createEvent(event) {
   return res;
 }
 
+//Update event
+async function updateEvent(event_id, event) {
+  return fetch(WEB_URL + 'dinnerevent', {
+      method: 'PUT',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+          id: event_id,
+          eventName: event.eventName,
+          time: event.time,
+          location: event.location,
+          dish: event.dish,
+          pricePerPerson: event.pricePerPerson,
+      })
+  })
+  .then(response => {
+    if (response.status === 200) {
+      alert("Event updated");
+    } else {
+      alert("Something went wrong");
+    }
+  })
+  .catch(error => {
+      console.error(error);
+  });
+}
+
+
 
 
 
@@ -453,6 +482,7 @@ async function createEvent(event) {
     getEvents,
     deleteEvent,
     createEvent,
+    updateEvent,
   };
 }
 const facade = apiFacade();
