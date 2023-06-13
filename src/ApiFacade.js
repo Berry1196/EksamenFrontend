@@ -253,26 +253,14 @@ async function updateEvent(event_id, event) {
 //Assignment functions
 
 // Create Assignment
-async function createAssignment(assignment, userNames) {
+async function createAssignment(assignment) {
   try {
-    // Create the assignment
-    const response = await fetch(`${WEB_URL}assignment`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(assignment)
-    });
-
+    const options = makeOptions("POST", true, assignment);
+    const response = await fetch(`${WEB_URL}assignment`, options);
     if (!response.ok) {
       throw new Error("Failed to create assignment");
     }
-
     const createdAssignment = await response.json();
-
-    // Assign users to the created assignment
-    await assignUsersToAssignment(createdAssignment.id, userNames);
-
     return createdAssignment;
   } catch (error) {
     console.error(error);
@@ -280,22 +268,16 @@ async function createAssignment(assignment, userNames) {
   }
 }
 
-// Assign users to Assignment
-async function assignUsersToAssignment(assignmentId, userNames) {
+// Assign User to Assignment
+async function assignUserToAssignment(assignmentId, username) {
   try {
-    const response = await fetch(`${WEB_URL}assignment/${assignmentId}/users`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(userNames)
-    });
-
+    const options = makeOptions("PUT", true, { id: assignmentId, username });
+    const response = await fetch(`${WEB_URL}assignment/${assignmentId}/users`, options);
     if (!response.ok) {
-      throw new Error("Failed to assign users to assignment");
+      throw new Error("Failed to assign user to assignment");
     }
-
-    return response.json();
+    const result = await response.json();
+    return result;
   } catch (error) {
     console.error(error);
     throw error;
@@ -312,6 +294,21 @@ async function getAssignments() {
   const res = await data.json();
   return res;
 }
+
+//add an assignment to a dinnerevent
+async function addAssignmentToEvent(event_id, assignment_id) {
+  const endpoint = `/assignment/${assignment_id}/dinnerevent/${event_id}`;
+
+  try {
+    const response = await fetch(endpoint, { method: "PUT" });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to add assignment to event:", error);
+    throw error;
+  }
+}
+
 
 
 
@@ -466,6 +463,8 @@ async function getAllUsers() {
     createAssignment,
     getAssignments,
     getAllUsers,
+    addAssignmentToEvent,
+    
   };
 }
 const facade = apiFacade();
