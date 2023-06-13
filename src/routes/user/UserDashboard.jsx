@@ -1,14 +1,74 @@
 import { Fragment, useState, useEffect } from "react";
+
 import facade from "../../ApiFacade";
+import { Dialog, Transition } from "@headlessui/react";
 
 export default function Dashboard({ username }) {
   const [events, setEvents] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [assignment, setAssignment] = useState({
+    familyName: "",
+    createDate: "",
+    contactInfo: "",
+  });
 
   useEffect(() => {
     facade.getEvents().then((data) => {
       setEvents(data);
     });
   }, []);
+
+  useEffect(() => {
+    facade.getAllUsers().then(setAllUsers);
+  }, []);
+
+  const handleUserSelection = (username) => {
+    setSelectedUsers((prevUsers) => {
+      // Check if user is already selected, then remove
+      if (prevUsers.includes(username)) {
+        return prevUsers.filter((user) => user !== username);
+      }
+      // Else, add the user to the selected users
+      return [...prevUsers, username];
+    });
+  };
+
+  const handleAssignmentChange = (e) => {
+    setAssignment({
+      ...assignment,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // Function to handle the submission of the assignment form
+  const handleAssignmentSubmit = async (e) => {
+    e.preventDefault();
+
+    const assignmentWithUsers = {
+      ...assignment,
+      users: selectedUsers,
+    };
+
+    try {
+      await facade.createAssignment(assignmentWithUsers);
+      setIsModalOpen(false);
+      // Perform any necessary cleanup or update actions after successful submission
+    } catch (error) {
+      // Handle any errors that occurred during the submission
+      console.error(error);
+    }
+  };
+
+  function handleSearch(e) {
+    setSearchTerm(e.target.value.toLowerCase());
+  }
+
+  // Filtered list of users based on search term
+  const filteredUsers = allUsers.filter((user) => user.user_name.toLowerCase().includes(searchTerm));
 
   return (
     <Fragment>
@@ -56,9 +116,13 @@ export default function Dashboard({ username }) {
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{event.pricePerPerson}</td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{event.time}</td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                        <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                          Edit<span className="sr-only">, {event.name}</span>
-                        </a>
+                        <button
+                          type="button"
+                          className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                          onClick={() => setIsModalOpen(true)}
+                        >
+                          Add user
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -68,6 +132,77 @@ export default function Dashboard({ username }) {
           </div>
         </div>
       </div>
+      <Transition appear show={isModalOpen} as={Fragment}>
+        <Dialog as="div" className="fixed inset-0 z-10 overflow-y-auto" onClose={() => setIsModalOpen(false)}>
+          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+              &#8203;
+            </span>
+            <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+              <div className="sm:flex sm:items-start">
+                <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                  <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
+                    Add Assignment
+                  </Dialog.Title>
+                  <div className="mt-2">
+                    <form onSubmit={handleAssignmentSubmit} className="space-y-4">
+                      <div className="flex flex-col">
+                        <label htmlFor="familyName" className="font-medium">
+                          Family Name:
+                        </label>
+                        <input type="text" name="familyName" onChange={handleAssignmentChange} value={assignment.familyName} className="border border-gray-300 px-2 py-1 rounded-md" />
+                      </div>
+
+                      <div className="flex flex-col">
+                        <label htmlFor="createDate" className="font-medium">
+                          Create Date:
+                        </label>
+                        <input type="text" name="createDate" onChange={handleAssignmentChange} value={assignment.createDate} className="border border-gray-300 px-2 py-1 rounded-md" />
+                      </div>
+
+                      <div className="flex flex-col">
+                        <label htmlFor="contactInfo" className="font-medium">
+                          Contact Info:
+                        </label>
+                        <input type="text" name="contactInfo" onChange={handleAssignmentChange} value={assignment.contactInfo} className="border border-gray-300 px-2 py-1 rounded-md" />
+                      </div>
+
+                      <div className="flex flex-col">
+                        <label htmlFor="searchUsers" className="font-medium">
+                          Search Users:
+                        </label>
+                        <input type="text" onChange={handleSearch} value={searchTerm} className="border border-gray-300 px-2 py-1 rounded-md" />
+                        <ul>
+                          {filteredUsers.map((user) => (
+                            <li key={user.user_name} className="flex items-center space-x-2">
+                              <input type="checkbox" checked={selectedUsers.includes(user.user_name)} onChange={() => handleUserSelection(user.user_name)} className="form-checkbox border-gray-300 rounded" />
+                              <span>{user.user_name}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md">
+                        Create Assignment
+                      </button>
+                    </form>
+                  </div>
+                </div>
+                <div className="ml-3 mt-3 sm:mt-0 sm:ml-4 sm:pr-4 sm:order-2 sm:flex sm:flex-row-reverse">
+                  <button
+                    type="button"
+                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
     </Fragment>
   );
 }

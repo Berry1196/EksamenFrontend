@@ -252,18 +252,79 @@ async function updateEvent(event_id, event) {
 
 //Assignment functions
 
-//Create Assignment
-async function createAssignment(assignment) {
-  const options = makeOptions("POST", true, assignment);
-  const data = await fetch(WEB_URL + "assignment", options);
-  const res = await data.json();
-  return res;
+// Create Assignment
+async function createAssignment(assignment, userNames) {
+  try {
+    // Create the assignment
+    const response = await fetch(`${WEB_URL}assignment`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(assignment)
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to create assignment");
+    }
+
+    const createdAssignment = await response.json();
+
+    // Assign users to the created assignment
+    await assignUsersToAssignment(createdAssignment.id, userNames);
+
+    return createdAssignment;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
+
+// Assign users to Assignment
+async function assignUsersToAssignment(assignmentId, userNames) {
+  try {
+    const response = await fetch(`${WEB_URL}assignment/${assignmentId}/users`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(userNames)
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to assign users to assignment");
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+
+
 
 //Get Assignments
 async function getAssignments() {
   const options = makeOptions("GET", true);
   const data = await fetch(WEB_URL + "assignment/all", options);
+  const res = await data.json();
+  return res;
+}
+
+
+
+
+
+
+
+
+
+//Get all users 
+async function getAllUsers() {
+  const options = makeOptions("GET", true);
+  const data = await fetch(WEB_URL + "user", options);
   const res = await data.json();
   return res;
 }
@@ -404,6 +465,7 @@ async function getAssignments() {
     updateEvent,
     createAssignment,
     getAssignments,
+    getAllUsers,
   };
 }
 const facade = apiFacade();
