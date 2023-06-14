@@ -19,22 +19,9 @@ export default function Navbar({ username, role }) {
   useEffect(() => {
     if (facade.loggedIn()) {
       if (role === "admin") {
-        setNavigation([
-          { name: "Dashboard", href: "/", current: location.pathname === "/" },
-          { name: "Exercises", href: "/exercises", current: location.pathname === "/exercises" },
-          ,
-          { name: "Boats", href: "/boats", current: location.pathname === "/boats" },
-          { name: "Harbours", href: "/harbours", current: location.pathname === "/harbours" },
-        ]);
+        setNavigation([{ name: "Dashboard", href: "/", current: location.pathname === "/" }]);
       } else if (role === "user") {
-        setNavigation([
-          { name: "Dashboard", href: "/", current: location.pathname === "/" },
-          { name: "Boats", href: "/boats", current: location.pathname === "/boats" },
-
-          { name: "Workouts", href: "/workouts", current: location.pathname === "/workouts" },
-          { name: "Activity", href: "/activity", current: location.pathname === "/activity" },
-          { name: "Events", href: "/events", current: location.pathname === "/events" },
-        ]);
+        setNavigation([{ name: "Dashboard", href: "/", current: location.pathname === "/" }]);
       }
     } else {
       setNavigation([

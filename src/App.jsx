@@ -12,15 +12,8 @@ import Login from "./routes/guest/Login";
 import About from "./routes/guest/About";
 import AdminDashboard from "./routes/admin/AdminDashboard";
 import UserDashboard from "./routes/user/UserDashboard";
-import AdminWorkouts from "./routes/admin/AdminWorkouts";
-import UserWorkouts from "./routes/user/UserWorkouts";
-import AdminExercises from "./routes/admin/AdminExercises";
-import Activity from "./routes/user/UserActivity";
-import PageNotFound from "./routes/guest/PageNotFound";
-import Boats from "./routes/admin/Boats";
 
-import AdminHarbour from "./routes/admin/AdminHarbour";
-import UserEvents from "./routes/user/UserEvents";
+import PageNotFound from "./routes/guest/PageNotFound";
 
 function App() {
   const [username, setUsername] = useState("");
@@ -39,20 +32,12 @@ function App() {
   const adminRoutes = (
     <Fragment>
       <Route path="/" element={<AdminDashboard />} />
-      <Route path="/workouts" element={<AdminWorkouts />} />
-      <Route path="/exercises" element={<AdminExercises />} />
-      <Route path="/boats" element={<Boats />} />
-      <Route path="/harbours" element={<AdminHarbour />} />
     </Fragment>
   );
 
   const userRoutes = (
     <Fragment>
       <Route path="/" element={<UserDashboard username={username} />} />
-
-      <Route path="/workouts" element={<UserWorkouts username={username} />} />
-      <Route path="/activity" element={<Activity username={username} />} />
-      <Route path="/events" element={<UserEvents username={username} />} />
     </Fragment>
   );
 
