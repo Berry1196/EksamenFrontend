@@ -23,11 +23,19 @@ export default function AdminHome() {
   const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [eventCreated, setEventCreated] = useState(false);
 
   //Use effect to get all events
   useEffect(() => {
     facade.getEvents().then((data) => setEvents(data));
   }, []);
+
+  // Update events when a new event is created
+  useEffect(() => {
+    if (eventCreated) {
+      facade.getEvents().then((data) => setEvents(data));
+    }
+  }, [eventCreated]);
 
   //use effect to get all assignments
   useEffect(() => {
@@ -64,7 +72,7 @@ export default function AdminHome() {
   //Creates a  event
   function handleSubmit(e) {
     e.preventDefault();
-    facade.createEvent(event);
+    facade.createEvent(event).then(() => setEventCreated(true));
     setOpen(false);
   }
 
